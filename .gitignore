@@ -1,0 +1,72 @@
+# Environment variables
+.env
+.env.local
+tests
+logs
+.claude
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.pyc
+*.pyo
+*.pyd
+.factory
+
+# Distribution / Packaging
+build/
+dist/
+*.egg-info/
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+virtualenv/
+
+# Testing / Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Type Checking
+.mypy_cache/
+.dmypy.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# Generated content (AI-created projects)
+output/
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.bak
+*.tmp
+
+# Logs
+*.log
+
+# Temporary files
+.context_summary_*.md
+test_output.txt
+PHASE1_COMMIT.txt
+
+plans
+debug_imports.py
+nul
+RESEARCH_IMPROVEMENTS.md
+QUALITY_IMPROVEMENTS.md
+BUGFIXES.md
