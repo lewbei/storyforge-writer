@@ -50,7 +50,6 @@ We are currently in **Phase 4** of development, focusing on rigorous testing and
 - [ ] **Code Cleanup**: Remove any temporary debug scripts or logs.
 - [ ] **Final Build**: Create release tag v1.0.
 
-See [MILESTONES.md](MILESTONES.md) for the canonical roadmap.
 
 ## 🔬 Research-Backed Improvements (v3.0)
 
@@ -59,7 +58,7 @@ StoryForge AI has been enhanced with **11 cutting-edge improvements** based on 1
 ### Performance Gains
 - **+7.8%** consistency improvement (SCORE Framework)
 - **2-3x** diversity improvement (Best-of-N Sampling)
-- **98%** item tracking accuracy (SCORE)
+- **Item tracking** for consistency checking
 - Dynamic quality thresholds prevent premature rejection
 
 ### Phase 1: Quick Wins ✅
@@ -86,8 +85,8 @@ StoryForge AI has been enhanced with **11 cutting-edge improvements** based on 1
 7. **Blackboard Architecture** - Multi-agent communication with shared workspace (`blackboard.py`)
    - Research: [Exploring Advanced LLM Multi-Agent Systems Based on Blackboard Architecture (arXiv:2507.01701)](https://arxiv.org/abs/2507.01701)
 
-8. **RAG-Based Consistency Retrieval** - Semantic search for continuity checking (`rag_retriever.py`)
-   - Research: [SCORE Framework (arXiv:2503.23512)](https://arxiv.org/abs/2503.23512)
+8. **Story Index** - Keyword-based search for continuity checking (`story_index.py`)
+   - Tracks characters, items, locations across episodes using keyword matching
 
 9. **Character Behavior Tracking** - Personality validation and arc progression (`character_tracker.py`)
    - Research: [Multi-Agent System for TV Series Analysis (arXiv:2503.04817)](https://arxiv.org/html/2503.04817v1), [Agent Memory Patterns (Letta)](https://www.letta.com/blog/agent-memory)
@@ -120,9 +119,9 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 1. **Clone and Install Dependencies:**
 
    ```bash
-   git clone https://github.com/Doriandarko/storyforge.git
-   cd storyforge
-   
+   git clone https://github.com/lewbei/storyforge-writer.git
+   cd storyforge-writer
+
    # Using uv (recommended)
    uv pip install -r requirements.txt
    ```
@@ -212,7 +211,7 @@ storyforge/
 - **Safety**: File operations are sandboxed to the `output/` directory.
 - **Research Foundation**: 15+ academic papers (2024-2025) from arXiv, industry research, and AI conferences.
 - **Architecture**: Multi-agent system with 5 specialized agents (Planner, Writer, QA, Consistency, Settings) communicating via Blackboard pattern.
-- **New Modules**: `blackboard.py`, `rag_retriever.py`, `character_tracker.py` for advanced consistency tracking.
+- **New Modules**: `blackboard.py`, `story_index.py`, `character_tracker.py` for advanced consistency tracking.
 
 ## License
 

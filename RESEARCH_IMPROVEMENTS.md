@@ -13,7 +13,7 @@ StoryForge AI agents have been enhanced with **cutting-edge research** from 2024
 **Key Results Expected:**
 - **7.8% consistency improvement** (SCORE Framework)
 - **2-3x diversity improvement** (Best-of-N Sampling)
-- **98% item tracking accuracy** (SCORE)
+- **Item tracking** for consistency checking
 - **Dynamic quality thresholds** (Context-aware QA)
 
 ---
@@ -85,7 +85,7 @@ base_thresholds = {
 
 **Location:** `storyforge/agents/consistency_agent.py:29-33, 139-231`
 
-**Impact:** 7.8% consistency improvement, 98% item status recognition accuracy.
+**Impact:** Improved consistency through episode summaries and item tracking.
 
 **Key Methods:**
 - `_generate_episode_summary()` - Structured summaries for continuity
@@ -155,7 +155,7 @@ qa_agent.enable_progression_analysis = True/False
 
 # Phase 3 Advanced Components
 blackboard = Blackboard()  # Multi-agent communication
-rag = RAGRetriever()  # Consistency retrieval
+story_index = StoryIndex()  # Consistency tracking
 tracker = CharacterTracker()  # Character tracking
 ```
 
@@ -167,7 +167,7 @@ tracker = CharacterTracker()  # Character tracking
 |--------|--------|-------|-------------|
 | Consistency Score | Baseline | +7.8% | SCORE Framework |
 | Draft Diversity | Baseline | 2-3x | Best-of-N |
-| Item Tracking | ~80% | 98% | SCORE |
+| Item Tracking | Manual | Automated | SCORE-inspired |
 | Prose Quality | Variable | Higher | Sensory Pass |
 | Plan Quality | 3D critique | 5D critique | +2 dimensions |
 
@@ -236,27 +236,27 @@ state = blackboard.export_state()
 
 ---
 
-### 8. RAG-Based Consistency Retrieval
+### 8. Story Index - Keyword-Based Consistency Tracking
 **Research Source:** [SCORE: Story Coherence and Retrieval Enhancement (arXiv:2503.23512)](https://arxiv.org/abs/2503.23512)
 
 **Implementation:**
-- ✅ Episode embeddings database
-- ✅ Semantic search for related episodes
+- ✅ Episode index database (keyword-based, not embeddings)
+- ✅ Keyword search for related episodes
 - ✅ Character history tracking
-- ✅ Item status verification (98% accuracy)
+- ✅ Item status verification
 - ✅ Timeline validation
 
-**Location:** `storyforge/rag_retriever.py` (NEW FILE - 330 lines)
+**Location:** `storyforge/story_index.py` (NEW FILE - 330 lines)
 
 **Key Features:**
 ```python
-rag = RAGRetriever()
+story_index = StoryIndex()
 
 # Index episodes
-rag.add_episode(episode_number=1, content=episode1_text, summary=summary)
+story_index.add_episode(episode_number=1, content=episode1_text, summary=summary)
 
-# Find related episodes
-related = rag.find_related_episodes(
+# Find related episodes (keyword-based matching)
+related = story_index.find_related_episodes(
     current_episode=5,
     query="magic sword",
     top_k=3
@@ -264,19 +264,19 @@ related = rag.find_related_episodes(
 # Returns: [{"episode": 2, "relevance_score": 15, "summary": "..."}]
 
 # Check character consistency
-history = rag.check_character_consistency("Protagonist", current_episode=5)
+history = story_index.check_character_consistency("Protagonist", current_episode=5)
 # Returns: {"appearances": [...], "known_attributes": {...}}
 
 # Check item status
-status = rag.check_item_status("magic sword", current_episode=5)
+status = story_index.check_item_status("magic sword", current_episode=5)
 # Returns: {"first_appearance": 2, "last_seen": 4, "history": [...]}
 
 # Validate timeline
-errors = rag.validate_timeline(current_episode=5)
+errors = story_index.validate_timeline(current_episode=5)
 # Returns: ["Timeline conflict: Episode 2 says 'X died' but Episode 4 says 'X alive'"]
 ```
 
-**Impact:** Semantic retrieval for continuity checking, 98% item tracking accuracy, automated timeline validation.
+**Impact:** Keyword-based search for continuity checking, item tracking, automated timeline validation.
 
 ---
 
@@ -456,7 +456,7 @@ python storyforge.py "Write a 3-episode sci-fi thriller about time travelers. Ea
 **Expected behavior:**
 - ✅ **Phase 1:** Dynamic temperatures (0.8 → 0.5 → 0.6), 5D critique, context-aware QA
 - ✅ **Phase 2:** Best-of-2 drafts, sensory enhancement, SCORE summaries
-- ✅ **Phase 3:** Hierarchical planning, character tracking, RAG consistency checks
+- ✅ **Phase 3:** Hierarchical planning, character tracking, story index consistency checks
 
 ### Example 2: Draft Mode (Lower Threshold)
 ```python
@@ -473,12 +473,12 @@ writer_agent.enable_best_of_n = False
 ### Example 4: Phase 3 Integration - Multi-Agent Coordination
 ```python
 from storyforge.blackboard import Blackboard
-from storyforge.rag_retriever import RAGRetriever
+from storyforge.story_index import StoryIndex
 from storyforge.character_tracker import CharacterTracker
 
 # Initialize Phase 3 components
 blackboard = Blackboard()
-rag = RAGRetriever()
+story_index = StoryIndex()
 tracker = CharacterTracker()
 
 # === PLANNER AGENT ===
@@ -511,8 +511,8 @@ tracker.track_appearance(
     dialogue=["I've seen this pattern before.", "He's taunting us."]
 )
 
-# Index episode in RAG
-rag.add_episode(
+# Index episode in story index
+story_index.add_episode(
     episode_number=1,
     content=episode1_content,
     summary="Detective Sarah Chen discovers the first victim with a cryptic riddle."
@@ -533,7 +533,7 @@ if errors:
     print("⚠️ Character inconsistencies detected:", errors)
 
 # Find related episodes
-related = rag.find_related_episodes(
+related = story_index.find_related_episodes(
     current_episode=2,
     query="riddle pattern",
     top_k=2
@@ -541,7 +541,7 @@ related = rag.find_related_episodes(
 print("📚 Related episodes:", related)
 
 # Check item status (e.g., evidence)
-status = rag.check_item_status("first riddle", current_episode=2)
+status = story_index.check_item_status("first riddle", current_episode=2)
 print("🔍 Item status:", status)
 
 # === QA AGENT ===
@@ -627,7 +627,7 @@ Character Arc Summary:
 
 **Phase 3: Advanced Features**
 - [x] Blackboard architecture (NEW FILE: blackboard.py)
-- [x] RAG-based consistency retrieval (NEW FILE: rag_retriever.py)
+- [x] Story index for consistency tracking (NEW FILE: story_index.py)
 - [x] Character behavior tracking (NEW FILE: character_tracker.py)
 - [x] Hierarchical planning (PlannerAgent)
 - [x] Progressive QA iteration tracking (QA Agent)

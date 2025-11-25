@@ -26,8 +26,8 @@ class ConsistencyAgent:
         self.tools = tools
         self.tool_map = tool_map
 
-        # RESEARCH-BACKED: SCORE Framework components (arXiv:2503.23512)
-        # Achieves 7.8% consistency improvement, 98% item status recognition
+        # SCORE Framework inspired components (arXiv:2503.23512)
+        # Episode summaries and item tracking for consistency
         self.episode_summaries = {}  # Track plot development across episodes
         self.item_status = {}        # Track objects and character states
         self.character_states = {}   # Track character development and actions
@@ -184,7 +184,7 @@ Content:
         """
         Track status of key items (objects, weapons, artifacts) across episodes.
 
-        RESEARCH-BACKED: SCORE item tracking (98% recognition accuracy)
+        SCORE-inspired item tracking for consistency checking.
 
         Args:
             episode_number: Episode number

@@ -1,13 +1,13 @@
 """
-RAG-Based Consistency Retrieval for Story Continuity
+Story Index - Keyword-Based Consistency Tracking for Story Continuity
 
-RESEARCH-BACKED: SCORE Framework (arXiv:2503.23512)
-- Retrieval-Augmented Generation for finding related episodes
-- Semantic search for continuity checking
-- Context-aware episode retrieval
+Provides keyword-based search and tracking for:
+- Episode indexing and retrieval
+- Character consistency checking
+- Item/location tracking
+- Timeline validation
 
-Also supports: Agent Memory patterns from Letta/MemGPT
-Source: https://www.letta.com/blog/agent-memory
+Note: Uses keyword matching, not embeddings/vectors.
 """
 
 import logging
@@ -18,29 +18,28 @@ import re
 logger = logging.getLogger(__name__)
 
 
-class RAGRetriever:
+class StoryIndex:
     """
-    RAG-based retrieval system for story consistency checking.
+    Keyword-based indexing system for story consistency checking.
 
-    RESEARCH-BACKED:
-    - SCORE Framework (arXiv:2503.23512) - RAG approach for consistency
-    - Agent Memory patterns (Letta) - Proper memory vs RAG distinction
+    Tracks characters, items, locations, and events across episodes
+    using simple keyword matching and regex extraction.
     """
 
     def __init__(self):
-        self.episode_embeddings = {}  # Store episode summaries
+        self.episode_index = {}  # Store episode summaries
         self.character_memory = {}  # Track character information
         self.world_rules = {}  # Track world-building rules
         self.timeline = []  # Chronological event ordering
 
     def add_episode(self, episode_number: int, content: str, summary: str) -> None:
         """
-        Add episode to retrieval index.
+        Add episode to the index.
 
         Args:
             episode_number: Episode number
             content: Full episode content
-            summary: Episode summary from SCORE
+            summary: Episode summary
         """
         # Extract key entities
         characters = self._extract_characters(content)
@@ -57,14 +56,12 @@ class RAGRetriever:
             "key_events": self._extract_key_events(content)
         }
 
-        self.episode_embeddings[episode_number] = entry
-        logger.info(f"[RAG] Indexed Episode {episode_number}: {len(characters)} chars, {len(items)} items")
+        self.episode_index[episode_number] = entry
+        logger.info(f"[StoryIndex] Indexed Episode {episode_number}: {len(characters)} chars, {len(items)} items")
 
     def find_related_episodes(self, current_episode: int, query: str, top_k: int = 3) -> List[Dict[str, Any]]:
         """
-        Find episodes related to query using semantic matching.
-
-        RESEARCH-BACKED: SCORE RAG approach
+        Find episodes related to query using keyword matching.
 
         Args:
             current_episode: Current episode number
@@ -74,11 +71,10 @@ class RAGRetriever:
         Returns:
             List of related episode entries
         """
-        # Simple keyword-based matching (can be upgraded to embeddings later)
         query_lower = query.lower()
         scores = []
 
-        for ep_num, ep_data in self.episode_embeddings.items():
+        for ep_num, ep_data in self.episode_index.items():
             if ep_num >= current_episode:
                 continue  # Only look at previous episodes
 
@@ -119,7 +115,7 @@ class RAGRetriever:
             for ep_num, score, ep_data in scores[:top_k]
         ]
 
-        logger.info(f"[RAG] Found {len(results)} related episodes for query: '{query}'")
+        logger.info(f"[StoryIndex] Found {len(results)} related episodes for query: '{query}'")
         return results
 
     def check_character_consistency(self, character: str, current_episode: int) -> Dict[str, Any]:
@@ -136,7 +132,7 @@ class RAGRetriever:
         appearances = []
         attributes = {}
 
-        for ep_num, ep_data in self.episode_embeddings.items():
+        for ep_num, ep_data in self.episode_index.items():
             if ep_num >= current_episode:
                 continue
 
@@ -161,8 +157,6 @@ class RAGRetriever:
         """
         Check item status across episodes.
 
-        RESEARCH-BACKED: SCORE item tracking (98% accuracy)
-
         Args:
             item: Item name
             current_episode: Current episode number
@@ -172,7 +166,7 @@ class RAGRetriever:
         """
         history = []
 
-        for ep_num, ep_data in self.episode_embeddings.items():
+        for ep_num, ep_data in self.episode_index.items():
             if ep_num >= current_episode:
                 continue
 
@@ -211,8 +205,8 @@ class RAGRetriever:
         # Check for temporal paradoxes
         events = []
         for ep_num in range(1, current_episode):
-            if ep_num in self.episode_embeddings:
-                ep_events = self.episode_embeddings[ep_num]["key_events"]
+            if ep_num in self.episode_index:
+                ep_events = self.episode_index[ep_num]["key_events"]
                 for event in ep_events:
                     events.append((ep_num, event))
 
@@ -312,18 +306,22 @@ class RAGRetriever:
         return False
 
     def export_memory(self) -> Dict[str, Any]:
-        """Export complete RAG memory for checkpointing."""
+        """Export complete index for checkpointing."""
         return {
-            "episode_embeddings": self.episode_embeddings,
+            "episode_index": self.episode_index,
             "character_memory": self.character_memory,
             "world_rules": self.world_rules,
             "timeline": self.timeline
         }
 
     def import_memory(self, memory: Dict[str, Any]) -> None:
-        """Import RAG memory from checkpoint."""
-        self.episode_embeddings = memory.get("episode_embeddings", {})
+        """Import index from checkpoint."""
+        self.episode_index = memory.get("episode_index", {})
         self.character_memory = memory.get("character_memory", {})
         self.world_rules = memory.get("world_rules", {})
         self.timeline = memory.get("timeline", [])
-        logger.info("[RAG] Memory imported from checkpoint")
+        logger.info("[StoryIndex] Memory imported from checkpoint")
+
+
+# Backward compatibility alias
+RAGRetriever = StoryIndex
